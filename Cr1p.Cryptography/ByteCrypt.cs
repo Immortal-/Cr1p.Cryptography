@@ -70,10 +70,9 @@ namespace Cr1p.Cryptography
             {
                 return cryptor.TransformFinalBlock(buffer, 0, buffer.Length);
             }
-            catch (Exception e)
+            catch (CryptographicException)
             {
-                if (e.Message == "The input data is not a complete block.") throw new Exception("Input data is not a complete block. You may have the wrong key/iv.");
-                else throw e;
+                throw new Exception("Ensure you have the right key/IV.");
             }
             finally
             {

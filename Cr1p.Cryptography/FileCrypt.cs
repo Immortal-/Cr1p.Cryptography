@@ -8,20 +8,13 @@ using System.Security.Cryptography;
 
 namespace Cr1p.Cryptography
 {
-    public abstract class ByteCrypt
+    public abstract class FileCrypt
     {
 
-        /// <summary>
-        /// Encrypts/decrypts a byte array
-        /// </summary>
-        /// <param name="buffer">Bytes to crypt</param>
-        /// <param name="key">"Password" for encryption</param>
-        /// <param name="iv">"Salt" for encryption. A starting point for encryption.</param>
-        /// <param name="encrypt">Do you wish to encrypt or decrypt?</param>
-        /// <param name="algorithm">Encryption algorithm. AES/DES/TripleDES</param>
-        /// <returns></returns>
-        public static byte[] Crypt(byte[] buffer, byte[] key, byte[] iv, bool encrypt = true, string algorithm = "aes")
+        public static void Crypt(string file, byte[] key, byte[] iv, bool encrypt = true, string algorithm = "aes")
         {
+
+            if (!File.Exists(file)) throw new ArgumentException("File has to exist.");
 
             AesCryptoServiceProvider aes = null;
             DESCryptoServiceProvider des = null;
@@ -66,25 +59,48 @@ namespace Cr1p.Cryptography
                     throw new ArgumentException(algorithm + " is not an implemented encryption algorithm. Use AES/DES/TripleDES.");
 
             }
-            try
+
+            CryptoStreamMode mode;
+            if (encrypt) mode = CryptoStreamMode.Write;
+            else mode = CryptoStreamMode.Read;
+
+            Random r = new Random();
+            string newFilename = file;
+            while (File.Exists(newFilename + ".tmp"))
             {
-                return cryptor.TransformFinalBlock(buffer, 0, buffer.Length);
+                newFilename += r.Next(0, 999999);
             }
-            catch (CryptographicException)
-            {
-                throw new ArgumentException("Ensure you have the right key/IV.");
-            }
-            finally
+            newFilename += ".tmp";
+
+            using (FileStream input = new FileStream(file, FileMode.Open), output = new FileStream(newFilename, FileMode.Create))
             {
 
-                                        cryptor.Dispose();
-                if (aes != null)        aes.Dispose();
-                if (des != null)        des.Dispose();
-                if (tripsDes != null)   tripsDes.Dispose();
+                CryptoStream cs;
+                if (encrypt) cs = new CryptoStream(output, cryptor, mode);
+                else cs = new CryptoStream(input, cryptor, mode);
+
+                try
+                {
+
+                    if (encrypt) input.CopyTo(cs);
+                    else cs.CopyTo(output);
+
+                }
+                catch (CryptographicException)
+                {
+                    throw new ArgumentException("Ensure you have the right key/IV.");
+                }
+                finally
+                {
+                    cs.Flush();
+                    cs.Dispose();
+                }
 
             }
+
+            File.Delete(file);
+            File.Move(newFilename, file);
 
         }
-
     }
 }

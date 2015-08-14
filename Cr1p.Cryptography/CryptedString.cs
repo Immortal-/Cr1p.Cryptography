@@ -36,6 +36,14 @@ namespace Cr1p.Cryptography
         {
             return BitConverter.ToString(_EncryptedBytes).Replace("-", String.Empty).ToLower();
         }
+        public byte[] Create32ByteKey()
+        {
+            return Hash.SHA256(_EncryptedBytes);
+        }
+        public byte[] Create16ByteIV()
+        {
+            return Hash.MD5(_EncryptedBytes);
+        }
 
         public void Dispose()
         {

@@ -58,6 +58,7 @@ namespace Cr1p.Cryptography
                 {
                     for (int x = 0; 35 > x; x++) rng.GetBytes(_EncryptedBytes); //Overwrite the encrypted bytes 35 times to ensure they can't be recovered.
                 }
+                _EncryptedBytes = null;
             }
         }
         ~CryptedString()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cr1p.Cryptography
 {
-    public abstract class StringEncryption
+    public abstract class StringCrypt
     {
 
         

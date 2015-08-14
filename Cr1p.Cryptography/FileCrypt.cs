@@ -16,9 +16,9 @@ namespace Cr1p.Cryptography
 
             if (!File.Exists(file)) throw new ArgumentException("File has to exist.");
 
-            AesCryptoServiceProvider aes = null;
-            DESCryptoServiceProvider des = null;
-            TripleDESCryptoServiceProvider tripsDes = null;
+            AesCryptoServiceProvider        aes         = null;
+            DESCryptoServiceProvider        des         = null;
+            TripleDESCryptoServiceProvider  tripsDes    = null;
 
             ICryptoTransform cryptor;
 
@@ -30,8 +30,8 @@ namespace Cr1p.Cryptography
                     aes.Key = key;
                     aes.IV = iv;
 
-                    if (encrypt) cryptor = aes.CreateEncryptor();
-                    else cryptor = aes.CreateDecryptor();
+                    if (encrypt) cryptor =  aes.CreateEncryptor();
+                    else cryptor =          aes.CreateDecryptor();
 
                     break;
 
@@ -40,8 +40,8 @@ namespace Cr1p.Cryptography
                     des.Key = key;
                     des.IV = iv;
 
-                    if (encrypt) cryptor = des.CreateEncryptor();
-                    else cryptor = des.CreateDecryptor();
+                    if (encrypt) cryptor =  des.CreateEncryptor();
+                    else cryptor =          des.CreateDecryptor();
 
                     break;
 
@@ -50,8 +50,8 @@ namespace Cr1p.Cryptography
                     tripsDes.Key = key;
                     tripsDes.IV = iv;
 
-                    if (encrypt) cryptor = tripsDes.CreateEncryptor();
-                    else cryptor = tripsDes.CreateDecryptor();
+                    if (encrypt) cryptor =  tripsDes.CreateEncryptor();
+                    else cryptor =          tripsDes.CreateDecryptor();
 
                     break;
 
@@ -60,30 +60,28 @@ namespace Cr1p.Cryptography
 
             }
 
-            CryptoStreamMode mode;
-            if (encrypt) mode = CryptoStreamMode.Write;
-            else mode = CryptoStreamMode.Read;
+            CryptoStreamMode    mode;
+            if (encrypt)        mode = CryptoStreamMode.Write;
+            else                mode = CryptoStreamMode.Read;
 
             Random r = new Random();
             string newFilename = file;
             while (File.Exists(newFilename + ".tmp"))
-            {
                 newFilename += r.Next(0, 999999);
-            }
             newFilename += ".tmp";
 
             using (FileStream input = new FileStream(file, FileMode.Open), output = new FileStream(newFilename, FileMode.Create))
             {
 
-                CryptoStream cs;
-                if (encrypt) cs = new CryptoStream(output, cryptor, mode);
-                else cs = new CryptoStream(input, cryptor, mode);
+                CryptoStream    cs;
+                if (encrypt)    cs =   new CryptoStream(output, cryptor, mode);
+                else            cs =   new CryptoStream(input, cryptor, mode);
 
                 try
                 {
 
-                    if (encrypt) input.CopyTo(cs);
-                    else cs.CopyTo(output);
+                    if (encrypt)    input.CopyTo(cs);
+                    else            cs.CopyTo(output);
 
                 }
                 catch (CryptographicException)

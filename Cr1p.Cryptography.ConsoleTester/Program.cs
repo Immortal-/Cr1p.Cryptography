@@ -17,14 +17,20 @@ namespace Cr1p.Cryptography.ConsoleTester
         static void Main(string[] args)
         {
 
-            byte[] hi = ASCIIEncoding.ASCII.GetBytes("This is what I wish to hide into an image file.".ToCharArray());
+            StringBuilder sb = new StringBuilder();
+            for (int x = 0; x < 1000; x++)
+            {
+                sb.Append("This is what I wish to hide into an image file.");
+            }
 
-            ColorHider.HideInBlue(hi, Image.FromFile("crip.png")).Save("crip_hidden.png",System.Drawing.Imaging.ImageFormat.Png);
-            byte[] newHi = ColorHider.ReadFromBlue(Image.FromFile("crip_hidden.png"),(ulong)hi.Length);
 
-            Console.WriteLine(ASCIIEncoding.ASCII.GetChars(newHi));
+            byte[] hi = ByteCrypt.Crypt(File.ReadAllBytes("C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"), Hash.SHA256(new byte[2]), Hash.MD5(new byte[2]), true, "aes");
 
-            Console.Read();
+            ByteBitmap.ToImage8(hi, 500, 500).Save("8.png");
+            ByteBitmap.ToImage16(hi, 500, 500).Save("16.png");
+            //ByteBitmap.ToImage24(hi, 250, 250).Save("24.png");
+            ByteBitmap.ToImage32(hi, 500, 500).Save("32.png");
+
 
 
         }

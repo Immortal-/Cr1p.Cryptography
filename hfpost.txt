@@ -1,0 +1,94 @@
+[align=center]
+[size=10][url=https://github.com/Cr1ppin/Cr1p.Cryptography/tree/master/Cr1p.Cryptography]==Github link==[/url][/size]
+
+[color=lightblue][size=7]Cr1p.Cryptography - Encryption/Decryption/Obfuscation/Steganography[/size][/color]
+
+I love working with byte arrays and encryption algorithms so I thought I would develop a library to make it easier for people to keep data secure without encryption knowledge.
+Keep in mind, this library is still in development. Everything is stable and I encourage you to use it.
+
+
+
+
+
+[size=5][b]What I want:[/b][/size]
+Constructive criticism on my work. Don't be afraid. Let me know what you think.
+Suggestions on what I should do next.
+
+[size=5][b]Notes:[/b][/size]
+Yes, I know the code is a little sloppy in some places. I'm working on fixing it and adding full documentation.
+
+[size=5][b]Upcoming updates:[/b][/size]
+Hide data in .PNG files without ruining a single pixel.
+Fix obfuscation of data into picture without key.
+Obfuscate data into the pixels of a .PNG file using a key. (Changing the image in a random/un-noticable way.)
+Suggest more below.
+
+[size=5][b]Known bugs:[/b][/size]
+ColorHider class is not working. You can't hide data INTO an image yet.
+
+Preview of functions/methods:
+[spoiler][align=left]
+
+[size=5]General byte encryption[/size]
+[code]
+using Cr1p.Cryptography;
+
+byte[] crypt = File.ReadAllBytes("encryptme.txt");
+byte[] key = new byte[32]; // Password
+byte[] iv = new byte[16]; // IV aka. salt
+
+//ByteCrypt.Crypt({data to encrypt}, {password}, {salt}, {encrypt = true, decrypt = false}, {aes/des/tripledes});
+byte[] encrypted = ByteCrypt.Crypt(crypt,key,iv,true,"aes");
+byte[] decrypted = ByteCrypt.Crypt(encrypted,key,iv,false,"aes");
+[/code]
+
+[size=5]File encryption[/size]
+[code]
+using Cr1p.Cryptography;
+
+byte[] key = new byte[32]; // Password
+byte[] iv = new byte[16]; // IV aka. salt
+
+//FileCrypt.Crypt("file.txt",key,iv,{encrypt = true, decrypt = false}, {aes/des/tripledes}});
+FileCrypt.Crypt("filepath.txt",key,iv,true,"aes"}); // Encrypt file.
+FileCrypt.Crypt("filepath.txt",key,iv,false,"aes"); // Decrypt file.
+
+[/code]
+
+[size=5]Hashing[/size]
+[code]
+using Cr1p.Cryptography;
+
+byte[] sha256 = Hash.Sha256(new byte[32]);
+CryptedString str = Hash.Sha256("or a string", "utf-8"); // string is hashed and encrypted in memory
+
+Console.Write(str.ToString());
+
+sha256 = str.GetBytes();
+
+// also Hash.Md5 and Hash.Sha512
+
+[/code]
+
+[/align][/spoiler]
+
+[size=5][b]Something "new/cool"[/b][/size]
+Recently, I've ran into steganography which is basically hiding data within other data.
+Such as hiding a message throughout different lines in a paragraph.
+I've created a very basic way of hiding data inside existing images and I'm going to continue to work on it. 
+
+Take a look at it in Cr1p.Cryptography.Steganography.
+
+A cool thing to do would be to encrypt a string, hide it into an image, check to see how the image has changed, retrieve it from the image, decrypt it, and use it again in a program.
+
+
+[size=5][b]Something "new/cool" in action[/b][/size]
+This is the ASCII string "This is what I wish to hide into an image file." obfuscated into a PNG using ToImage8 method. (tiny little 10x10 picture below)
+[img]http://i.imgur.com/9WBSxJM.png[/img]
+You can deobfuscate this string using the FromImage8 method.
+
+
+
+
+[size=10][url=https://github.com/Cr1ppin/Cr1p.Cryptography/tree/master/Cr1p.Cryptography]==Github link==[/url][/size]
+[/align]

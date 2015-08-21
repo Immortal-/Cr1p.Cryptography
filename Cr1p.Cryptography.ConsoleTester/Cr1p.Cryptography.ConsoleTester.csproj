@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B308DED5-856D-402F-8988-7585A8AEB25D}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{295C36B7-C0E5-4022-8AEF-CC91DB8E786F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cr1p.Cryptography</RootNamespace>
-    <AssemblyName>Cr1p.Cryptography</AssemblyName>
+    <RootNamespace>Cr1p.Cryptography.ConsoleTester</RootNamespace>
+    <AssemblyName>Cr1p.Cryptography.ConsoleTester</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,16 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ByteCrypt.cs" />
-    <Compile Include="Ciphers\CaesarsCipher.cs" />
-    <Compile Include="Ciphers\VigenereCipher.cs" />
-    <Compile Include="CryptedString.cs" />
-    <Compile Include="Steganography\ColorHider.cs" />
-    <Compile Include="Steganography\ByteBitmap.cs" />
-    <Compile Include="FileCrypt.cs" />
-    <Compile Include="Hash.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringCrypt.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cr1p.Cryptography\Cr1p.Cryptography.csproj">
+      <Project>{b308ded5-856d-402f-8988-7585a8aeb25d}</Project>
+      <Name>Cr1p.Cryptography</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

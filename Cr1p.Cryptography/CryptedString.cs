@@ -17,16 +17,16 @@ namespace Cr1p.Cryptography
         }
         public CryptedString(string encryptedString, string encoding = "utf-8")
         {
-            _EncryptedBytes = CharConverter.CharToByte(encryptedString.ToCharArray(), encoding);
+            _EncryptedBytes = Encoding.GetEncoding(encoding).GetBytes(encryptedString);
         }
 
         public string ToString(string encoding = "utf-8")
         {
-            return new String(CharConverter.ByteToChar(_EncryptedBytes, encoding));
+            return new String(GetChars(encoding));
         }
         public char[] GetChars(string encoding = "utf-8")
         {
-            return CharConverter.ByteToChar(_EncryptedBytes, encoding);
+            return Encoding.GetEncoding(encoding).GetChars(_EncryptedBytes);
         }
         public byte[] GetBytes()
         {
@@ -36,19 +36,18 @@ namespace Cr1p.Cryptography
         {
             return BitConverter.ToString(_EncryptedBytes).Replace("-", String.Empty).ToLower();
         }
-        public byte[] Create32ByteKey()
+        public CryptedString HashSHA(uint times = 1)
         {
-            return Hash.SHA256(_EncryptedBytes);
+            return new CryptedString(Hash.SHA256(_EncryptedBytes,times));
         }
-        public byte[] Create16ByteIV()
+        public CryptedString HashMD5(uint times = 1)
         {
-            return Hash.MD5(_EncryptedBytes);
+            return new CryptedString(Hash.MD5(_EncryptedBytes,times));
         }
 
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool b)
         {

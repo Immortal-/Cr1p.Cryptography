@@ -11,7 +11,7 @@ namespace Cr1p.Cryptography
 
         
         /// <summary>
-        /// Encrypts a string and returns a hex string.
+        /// Encrypts a string and returns a CryptedString
         /// </summary>
         /// <param name="buffer">Bytes to encrypt</param>
         /// <param name="key">"Password" for encryption</param>
@@ -24,9 +24,9 @@ namespace Cr1p.Cryptography
 
             return new CryptedString(
                         ByteCrypt.Crypt(
-                            CharConverter.CharToByte(buffer.ToCharArray(), encoding),
-                            CharConverter.CharToByte(key.ToCharArray(), encoding),
-                            CharConverter.CharToByte(iv.ToCharArray(), encoding),
+                            Encoding.GetEncoding(encoding).GetBytes(buffer),
+                            Encoding.GetEncoding(encoding).GetBytes(key),
+                            Encoding.GetEncoding(encoding).GetBytes(iv),
                             encrypt,
                             algorithm
                         )
@@ -38,7 +38,7 @@ namespace Cr1p.Cryptography
 
             return new CryptedString(
                         ByteCrypt.Crypt(
-                            CharConverter.CharToByte(buffer.ToCharArray(), encoding),
+                            Encoding.GetEncoding(encoding).GetBytes(buffer),
                             key.GetBytes(),
                             iv.GetBytes(),
                             encrypt,

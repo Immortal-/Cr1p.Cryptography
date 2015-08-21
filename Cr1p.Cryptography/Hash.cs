@@ -54,7 +54,7 @@ namespace Cr1p.Cryptography
         /// <returns></returns>
         public static CryptedString SHA256(string buffer, string encoding = "utf-8", UInt64 loops = 1)
         {
-            return new CryptedString(SHA256(CharConverter.CharToByte(buffer.ToCharArray(), encoding), loops));
+            return new CryptedString(SHA256(Encoding.GetEncoding(encoding).GetBytes(buffer), loops));
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Cr1p.Cryptography
         /// <returns></returns>
         public static CryptedString SHA512(string buffer, string encoding = "utf-8", UInt64 loops = 1)
         {
-            return new CryptedString(SHA512(CharConverter.CharToByte(buffer.ToCharArray(), encoding), loops));
+            return new CryptedString(Hash.SHA256(Encoding.GetEncoding(encoding).GetBytes(buffer),loops));
         }
 
         /// <summary>
@@ -76,9 +76,43 @@ namespace Cr1p.Cryptography
         /// <returns></returns>
         public static CryptedString MD5(string buffer, string encoding = "utf-8", UInt64 loops = 1)
         {
-            return new CryptedString(MD5(CharConverter.CharToByte(buffer.ToCharArray(), encoding), loops));
+            return new CryptedString(MD5(Encoding.GetEncoding(encoding).GetBytes(buffer), loops));
         }
-        
+
+        /// <summary>
+        /// Hashes a file using SHA256
+        /// </summary>
+        /// <param name="file">FileInfo of file you wish to hash.</param>
+        /// <param name="loops">How many times to hash the file</param>
+        /// <returns></returns>
+        public static byte[] SHA256(System.IO.FileInfo file, UInt64 loops = 1)
+        {
+            return SHA256(System.IO.File.ReadAllBytes(file.FullName), loops);
+        }
+
+        /// <summary>
+        /// Hashes a file using SHA512
+        /// </summary>
+        /// <param name="file">FileInfo of file you wish to hash.</param>
+        /// <param name="loops">How many times to hash the file</param>
+        /// <returns></returns>
+        public static byte[] SHA512(System.IO.FileInfo file, UInt64 loops = 1)
+        {
+            return SHA512(System.IO.File.ReadAllBytes(file.FullName), loops);
+        }
+
+        /// <summary>
+        /// Hashes a file using MD5
+        /// </summary>
+        /// <param name="file">FileInfo of file you wish to hash.</param>
+        /// <param name="loops">How many times to hash the file</param>
+        /// <returns></returns>
+        public static byte[] MD5(System.IO.FileInfo file, UInt64 loops = 1)
+        {
+            return MD5(System.IO.File.ReadAllBytes(file.FullName), loops);
+        }
+
+
 
     }
 }

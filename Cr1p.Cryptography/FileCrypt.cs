@@ -14,7 +14,7 @@ namespace Cr1p.Cryptography
         public static void Crypt(string file, byte[] key, byte[] iv, bool encrypt = true, string algorithm = "aes")
         {
 
-            if (!File.Exists(file)) throw new ArgumentException("File has to exist.");
+            if (!File.Exists(file)) throw new FileNotFoundException(file);
 
             AesCryptoServiceProvider        aes         = null;
             DESCryptoServiceProvider        des         = null;
@@ -29,6 +29,7 @@ namespace Cr1p.Cryptography
                     aes = new AesCryptoServiceProvider();
                     aes.Key = key;
                     aes.IV = iv;
+                    aes.Padding = PaddingMode.None;
 
                     if (encrypt) cryptor =  aes.CreateEncryptor();
                     else cryptor =          aes.CreateDecryptor();
@@ -39,6 +40,7 @@ namespace Cr1p.Cryptography
                     des = new DESCryptoServiceProvider();
                     des.Key = key;
                     des.IV = iv;
+                    des.Padding = PaddingMode.None;
 
                     if (encrypt) cryptor =  des.CreateEncryptor();
                     else cryptor =          des.CreateDecryptor();
@@ -49,6 +51,7 @@ namespace Cr1p.Cryptography
                     tripsDes = new TripleDESCryptoServiceProvider();
                     tripsDes.Key = key;
                     tripsDes.IV = iv;
+                    tripsDes.Padding = PaddingMode.None;
 
                     if (encrypt) cryptor =  tripsDes.CreateEncryptor();
                     else cryptor =          tripsDes.CreateDecryptor();

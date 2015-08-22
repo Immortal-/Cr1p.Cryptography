@@ -15,31 +15,33 @@ namespace Cr1p.Cryptography.Steganography
 
             if (buffer.Length % 4 != 0) throw new ArgumentException("Buffer length needs to be a factor of 4.");
 
-            Bitmap bmp = new Bitmap(width, height);
-
-            //foreach pixel row.
-            int pointer = 0;
-            for (int y = 0; y < height; y++)
+            using (Bitmap bmp = new Bitmap(width, height))
             {
-                for (int x = 0; x < width; x++)
+
+                //foreach pixel row.
+                int pointer = 0;
+                for (int y = 0; y < height; y++)
                 {
+                    for (int x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
+
+                        byte a = buffer[pointer];
+                        byte r = buffer[pointer + 1];
+                        byte g = buffer[pointer + 2];
+                        byte b = buffer[pointer + 3];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(a, r, g, b));
+
+                        pointer += 4;
+                    }
+
                     if (pointer >= buffer.Length) break;
 
-                    byte a = buffer[pointer];
-                    byte r = buffer[pointer + 1];
-                    byte g = buffer[pointer + 2];
-                    byte b = buffer[pointer + 3];
-                    
-                    bmp.SetPixel(x, y, Color.FromArgb(a,r,g,b));
-
-                    pointer += 4;
                 }
 
-                if (pointer >= buffer.Length) break;
-
+                return bmp;
             }
-
-            return bmp;
         }
 
         public static byte[] FromImage32(Image buffer)
@@ -81,30 +83,32 @@ namespace Cr1p.Cryptography.Steganography
 
             if (buffer.Length % 3 != 0) throw new ArgumentException("Buffer length needs to be a factor of 3.");
 
-            Bitmap bmp = new Bitmap(width, height);
-
-            //foreach pixel row.
-            int pointer = 0;
-            for (int y = 0; y < height; y++)
+            using (Bitmap bmp = new Bitmap(width, height))
             {
-                for (int x = 0; x < width; x++)
+
+                //foreach pixel row.
+                int pointer = 0;
+                for (int y = 0; y < height; y++)
                 {
+                    for (int x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
+
+                        byte r = buffer[pointer];
+                        byte g = buffer[pointer + 1];
+                        byte b = buffer[pointer + 2];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(r, g, b));
+
+                        pointer += 3; // Move 3 bytes ahead.
+                    }
+
                     if (pointer >= buffer.Length) break;
 
-                    byte r = buffer[pointer];
-                    byte g = buffer[pointer + 1];
-                    byte b = buffer[pointer + 2];
-
-                    bmp.SetPixel(x, y, Color.FromArgb(r, g, b));
-
-                    pointer += 3; // Move 3 bytes ahead.
                 }
 
-                if (pointer >= buffer.Length) break;
-
+                return bmp;
             }
-
-            return bmp;
 
         }
 
@@ -145,29 +149,31 @@ namespace Cr1p.Cryptography.Steganography
 
             if (buffer.Length % 2 != 0) throw new ArgumentException("Buffer length needs to be a factor of 2.");
 
-            Bitmap bmp = new Bitmap(width, height);
-
-            //foreach pixel row.
-            int pointer = 0;
-            for (int y = 0; y < height; y++)
+            using (Bitmap bmp = new Bitmap(width, height))
             {
-                for (int x = 0; x < width; x++)
+
+                //foreach pixel row.
+                int pointer = 0;
+                for (int y = 0; y < height; y++)
                 {
+                    for (int x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
+
+                        byte r = buffer[pointer];
+                        byte g = buffer[pointer + 1];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(r, g, 0));
+
+                        pointer += 2; // Move 2 bytes ahead.
+                    }
+
                     if (pointer >= buffer.Length) break;
 
-                    byte r = buffer[pointer];
-                    byte g = buffer[pointer + 1];
-
-                    bmp.SetPixel(x, y, Color.FromArgb(r, g, 0));
-
-                    pointer += 2; // Move 2 bytes ahead.
                 }
 
-                if (pointer >= buffer.Length) break;
-
+                return bmp;
             }
-
-            return bmp;
 
         }
 
@@ -201,30 +207,33 @@ namespace Cr1p.Cryptography.Steganography
         public static Image ToImage8(byte[] buffer, int width, int height)
         {
 
-            Bitmap bmp = new Bitmap(width, height);
-
-            //foreach pixel row.
-            int pointer = 0;
-            for (int y = 0; y < height; y++)
+            using (Bitmap bmp = new Bitmap(width, height))
             {
-                for (int x = 0; x < width; x++)
+
+                //foreach pixel row.
+                int pointer = 0;
+                for (int y = 0; y < height; y++)
                 {
+                    for (int x = 0; x < width; x++)
+                    {
+
+                        if (pointer >= buffer.Length) break;
+
+                        byte r = buffer[pointer];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(r, 0, 0));
+
+                        pointer++;
+
+                    }
 
                     if (pointer >= buffer.Length) break;
 
-                    byte r = buffer[pointer];
-
-                    bmp.SetPixel(x, y, Color.FromArgb(r, 0, 0));
-
-                    pointer++;
-
                 }
 
-                if (pointer >= buffer.Length) break;
-
+                return bmp;
             }
-
-            return bmp;
+            
 
         }
 

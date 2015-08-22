@@ -228,5 +228,30 @@ namespace Cr1p.Cryptography.Steganography
 
         }
 
+        public static byte[] FromImage8(Image buffer)
+        {
+
+            Bitmap bmp = (Bitmap)buffer;
+            byte[] data = new byte[(buffer.Height * buffer.Width) * 2];
+
+
+
+            int pointer = 0;
+            for (int y = 0; y < buffer.Height; y++) for (int x = 0; x < buffer.Width; x++)
+                {
+
+                    Color c = bmp.GetPixel(x, y);
+
+                    byte r = c.R;
+
+                    data[pointer] = r;
+
+                    pointer++;
+
+                }
+
+            return data;
+        }
+
     }
 }

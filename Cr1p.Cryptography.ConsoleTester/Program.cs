@@ -24,7 +24,7 @@ namespace Cr1p.Cryptography.ConsoleTester
             }
 
 
-            byte[] hi = ByteCrypt.Crypt(File.ReadAllBytes("C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"), Hash.SHA256(new byte[2]), Hash.MD5(new byte[2]), true, "aes");
+            byte[] hi = ByteCrypt.Crypt(File.ReadAllBytes("C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"), Hash.SHA256(new byte[5]), Hash.MD5(new byte[20]), true, "aes");
 
             ByteBitmap.ToImage8(hi, 500, 500).Save("8.png");
             ByteBitmap.ToImage16(hi, 500, 500).Save("16.png");

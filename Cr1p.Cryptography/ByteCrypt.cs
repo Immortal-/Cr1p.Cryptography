@@ -1,96 +1,273 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Security.Cryptography;
-
-namespace Cr1p.Cryptography
+using System;
+using System.Drawing;
+/*
+* @Author: Cr1ppin
+* @AuthorLink: https://github.com/Cr1ppin
+* @GithubLink: https://github.com/Cr1ppin/Cr1p.Cryptography
+* @UpdateBy: Immortal
+*/
+namespace Steganography.Library
 {
-    public abstract class ByteCrypt
+    /// <summary>
+    /// steganography is basically hiding data within other data.
+    /// </summary>
+    public abstract class ByteBitmap
     {
-
         /// <summary>
-        /// Encrypts/decrypts a byte array
+        ///  creates an image based on a byte[]
         /// </summary>
-        /// <param name="buffer">Bytes to crypt</param>
-        /// <param name="key">"Password" for encryption</param>
-        /// <param name="iv">"Salt" for encryption. A starting point for encryption.</param>
-        /// <param name="encrypt">Do you wish to encrypt or decrypt?</param>
-        /// <param name="algorithm">Encryption algorithm. AES/DES/TripleDES</param>
+        /// <param name="buffer"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         /// <returns></returns>
-        public static byte[] Crypt(byte[] buffer, byte[] key, byte[] iv, bool encrypt = true, string algorithm = "aes")
+        public static Image ToImage32(byte[] buffer, int width, int height)
         {
+            if (buffer.Length%4 != 0) throw new ArgumentException("Buffer length needs to be a factor of 4.");
 
-            AesCryptoServiceProvider aes = null;
-            DESCryptoServiceProvider des = null;
-            TripleDESCryptoServiceProvider tripsDes = null;
-
-            ICryptoTransform cryptor;
-
-            switch (algorithm.ToLower())
+            using (var bmp = new Bitmap(width, height))
             {
+                //foreach pixel row.
+                var pointer = 0;
+                for (var y = 0; y < height; y++)
+                {
+                    for (var x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
 
-                case "aes":
-                    aes = new AesCryptoServiceProvider();
-                    aes.Key = key;
-                    aes.IV = iv;
-                    //aes.Padding = PaddingMode.None;
+                        var a = buffer[pointer];
+                        var r = buffer[pointer + 1];
+                        var g = buffer[pointer + 2];
+                        var b = buffer[pointer + 3];
 
-                    if (encrypt) cryptor = aes.CreateEncryptor();
-                    else cryptor = aes.CreateDecryptor();
+                        bmp.SetPixel(x, y, Color.FromArgb(a, r, g, b));
 
-                    break;
+                        pointer += 4;
+                    }
 
-                case "des":
-                    des = new DESCryptoServiceProvider();
-                    des.Key = key;
-                    des.IV = iv;
-                    //des.Padding = PaddingMode.None;
+                    if (pointer >= buffer.Length) break;
+                }
 
-                    if (encrypt) cryptor = des.CreateEncryptor();
-                    else cryptor = des.CreateDecryptor();
-
-                    break;
-
-                case "tripledes":
-                    tripsDes = new TripleDESCryptoServiceProvider();
-                    tripsDes.Key = key;
-                    tripsDes.IV = iv;
-                    //tripsDes.Padding = PaddingMode.None;
-
-
-                    if (encrypt) cryptor = tripsDes.CreateEncryptor();
-                    else cryptor = tripsDes.CreateDecryptor();
-
-                    break;
-
-                default:
-                    throw new ArgumentException(algorithm + " is not an implemented encryption algorithm. Use AES/DES/TripleDES.");
-
+                return bmp;
             }
-            try
-            {
-
-                return cryptor.TransformFinalBlock(buffer, 0, buffer.Length);
-
-            }
-            catch (CryptographicException)
-            {
-                throw new ArgumentException("Ensure you have the right key/IV.");
-            }
-            finally
-            {
-
-                                        cryptor.Dispose();
-                if (aes != null)        aes.Dispose();
-                if (des != null)        des.Dispose();
-                if (tripsDes != null)   tripsDes.Dispose();
-
-            }
-
         }
+        /// <summary>
+        /// gets byte[] from image
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        public static byte[] FromImage32(Image buffer)
+        {
+            var bmp = (Bitmap) buffer;
+            var data = new byte[(buffer.Height*buffer.Width)*4];
 
+
+            var pointer = 0;
+            for (var y = 0; y < buffer.Height; y++)
+                for (var x = 0; x < buffer.Width; x++)
+                {
+                    var c = bmp.GetPixel(x, y);
+
+                    var a = c.A;
+                    var r = c.R;
+                    var g = c.G;
+                    var b = c.B;
+
+                    data[pointer] = a;
+                    data[pointer + 1] = r;
+                    data[pointer + 2] = g;
+                    data[pointer + 3] = b;
+
+                    pointer += 4;
+                }
+
+            return data;
+        }
+        /// <summary>
+        ///  creates an image based on a byte[]
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static Image ToImage24(byte[] buffer, int width, int height)
+        {
+            if (buffer.Length%3 != 0) throw new ArgumentException("Buffer length needs to be a factor of 3.");
+
+            using (var bmp = new Bitmap(width, height))
+            {
+                //foreach pixel row.
+                var pointer = 0;
+                for (var y = 0; y < height; y++)
+                {
+                    for (var x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
+
+                        var r = buffer[pointer];
+                        var g = buffer[pointer + 1];
+                        var b = buffer[pointer + 2];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(r, g, b));
+
+                        pointer += 3; // Move 3 bytes ahead.
+                    }
+
+                    if (pointer >= buffer.Length) break;
+                }
+
+                return bmp;
+            }
+        }
+        /// <summary>
+        ///  creates an image based on a byte[]
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        public static byte[] FromImage24(Image buffer)
+        {
+            var bmp = (Bitmap) buffer;
+            var data = new byte[(buffer.Height*buffer.Width)*3];
+
+
+            var pointer = 0;
+            for (var y = 0; y < buffer.Height; y++)
+                for (var x = 0; x < buffer.Width; x++)
+                {
+                    var c = bmp.GetPixel(x, y);
+
+                    var r = c.R;
+                    var g = c.G;
+                    var b = c.B;
+
+                    data[pointer] = r;
+                    data[pointer + 1] = g;
+                    data[pointer + 2] = b;
+
+                    pointer += 3;
+                }
+
+            return data;
+        }
+        /// <summary>
+        ///  creates an image based on a byte[]
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="height"></param>
+        /// <param name="width"></param>
+        /// <returns></returns>
+        public static Image ToImage16(byte[] buffer, int height, int width)
+        {
+            if (buffer.Length%2 != 0) throw new ArgumentException("Buffer length needs to be a factor of 2.");
+
+            using (var bmp = new Bitmap(width, height))
+            {
+                //foreach pixel row.
+                var pointer = 0;
+                for (var y = 0; y < height; y++)
+                {
+                    for (var x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
+
+                        var r = buffer[pointer];
+                        var g = buffer[pointer + 1];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(r, g, 0));
+
+                        pointer += 2; // Move 2 bytes ahead.
+                    }
+
+                    if (pointer >= buffer.Length) break;
+                }
+
+                return bmp;
+            }
+        }
+        /// <summary>
+        /// gets byte[] from image
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        public static byte[] FromImage16(Image buffer)
+        {
+            var bmp = (Bitmap) buffer;
+            var data = new byte[(buffer.Height*buffer.Width)*2];
+
+
+            var pointer = 0;
+            for (var y = 0; y < buffer.Height; y++)
+                for (var x = 0; x < buffer.Width; x++)
+                {
+                    var c = bmp.GetPixel(x, y);
+
+                    var r = c.R;
+                    var g = c.G;
+
+                    data[pointer] = r;
+                    data[pointer + 1] = g;
+
+                    pointer += 2;
+                }
+
+            return data;
+        }
+        /// <summary>
+        /// creates an image based on a byte[]
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static Image ToImage8(byte[] buffer, int width, int height)
+        {
+            using (var bmp = new Bitmap(width, height))
+            {
+                //foreach pixel row.
+                var pointer = 0;
+                for (var y = 0; y < height; y++)
+                {
+                    for (var x = 0; x < width; x++)
+                    {
+                        if (pointer >= buffer.Length) break;
+
+                        var r = buffer[pointer];
+
+                        bmp.SetPixel(x, y, Color.FromArgb(r, 0, 0));
+
+                        pointer++;
+                    }
+
+                    if (pointer >= buffer.Length) break;
+                }
+
+                return bmp;
+            }
+        }
+        /// <summary>
+        /// gets byte[] from image
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        public static byte[] FromImage8(Image buffer)
+        {
+            var bmp = (Bitmap) buffer;
+            var data = new byte[(buffer.Height*buffer.Width)*2];
+
+
+            var pointer = 0;
+            for (var y = 0; y < buffer.Height; y++)
+                for (var x = 0; x < buffer.Width; x++)
+                {
+                    var c = bmp.GetPixel(x, y);
+
+                    var r = c.R;
+
+                    data[pointer] = r;
+
+                    pointer++;
+                }
+
+            return data;
+        }
     }
 }
